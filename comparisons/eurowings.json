@@ -1,0 +1,21 @@
+{
+	"inputData": {
+		"origin": "BRU",
+		"destination": "AMS",
+		"departureDate": "2020-10-17"
+	},
+	"scrapers": [
+		{
+			"scraperClass": "EurowingsWebScraper",
+			"params": []
+		},
+		{
+			"scraperClass": "EurowingsAppScraper",
+			"params": [
+				{
+					"useRealDevice": "true"
+				}
+			]
+		}
+	]
+}
