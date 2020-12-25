@@ -15,12 +15,9 @@ RUN npm install
 RUN npm install -g typescript
 RUN npm install -g ts-node
 
-RUN apk add bash nano supervisor
-
-RUN apk add filebeat --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing
+RUN apk add bash nano
 
 # Bundle app source
 COPY . .
 
-CMD ["/usr/bin/supervisord", "-c", "/usr/src/app/supervisord.conf"]
-
+CMD [ "ts-node", "controller.ts" ]
