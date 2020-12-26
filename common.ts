@@ -1,7 +1,9 @@
 var Queue = require('bull');
+import { pathToFileURL } from 'url';
 import winston from 'winston';
 const ecsFormat = require('@elastic/ecs-winston-format');
 require('dotenv').config();
+var path = require('path');
 
 
 export const db = require("knex")({
@@ -32,7 +34,7 @@ export const db = require("knex")({
     format: ecsFormat(),
     transports: [
         new winston.transports.Console(),
-        new winston.transports.File({ filename: 'controller.log' }),
+        new winston.transports.File({ filename: path.join('.', 'logs' , 'controller.log') }),
     ]
 })
 
