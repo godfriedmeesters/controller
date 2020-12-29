@@ -1,28 +1,42 @@
-require('dotenv').config();
-var fs = require('fs');
-var path = require('path');
-var CronJob = require('cron').CronJob;
-import { logger, db, launchComparison, finishedScrapesQueue, erroredScrapesQueue } from './common';
+/**
+ * @ Author: Godfried Meesters <godfriedmeesters@gmail.com>
+ * @ Create Time: 2020-11-17 21:36:33
+ * @ Modified by: Godfried Meesters <godfriedmeesters@gmail.com>
+ * @ Modified time: 2020-12-29 20:36:15
+ * @ Description:
+ */
 
+
+require('dotenv').config();
+var CronJob = require('cron').CronJob;
+import { db, launchComparison, finishedScrapes, erroredScrapes } from './common';
+
+import { logger } from './logger';
 
 logger.info("Started controller, listening for finished scrapes...");
 if (process.env.RUN_CRON == "TRUE") {
-  var job = new CronJob(`*/${process.env.SCRAPE_EVERY_SECONDS} * * * * *`, function () {
-    logger.info("New job added");
+  logger.info(`Starting cron job with timing ${process.env.CRON}`)
+  var job = new CronJob(process.env.CRON, function () {
+    logger.info("CRON event fired");
 
-    fs.readdirSync('./comparisons/').forEach(async comparisonFile => {
+    (async () => {
+      const comparisons = await db('comparison').select('*');
 
-      let comparisonConfig: any = JSON.parse(fs.readFileSync(path.join('./comparisons/', comparisonFile), 'utf8'));
+      logger.info("Going to launch all comparisons");
+      for (var comparison of comparisons) {
+        if (comparison.enabled)
+          launchComparison(comparison);
+        else
+          logger.info(`Comparison ${comparison.id} disabled, skipping`);
+      }
 
-      launchComparison(comparisonConfig);
-    });
+    })();
 
   }, null, true, 'Europe/Brussels');
   job.start();
-
 }
 
-finishedScrapesQueue.process((job, done) => {
+finishedScrapes.process((job, done) => {
   logger.info(`${job.data.scraperClass} finished`);
   logger.debug(`Result returned: ${JSON.stringify(job.data)}`);
 
@@ -32,7 +46,7 @@ finishedScrapesQueue.process((job, done) => {
         logger.info("Saving in db ");
         const scraper = await db('scraper').where({ name: job.data.scraperClass }).first();
 
-        var scraperRunId = await db('scraperRun').insert({scraperId: scraper.id, comparisonId: job.data.comparisonId, inputData: job.data.inputData, startTime: job.data.startTime, stopTime: job.data.stopTime })
+        var scraperRunId = await db('scraperRun').insert({ scraperId: scraper.id, comparisonId: job.data.comparisonId, comparisonRunId: job.data.comparisonRunId, inputData: job.data.inputData, startTime: job.data.startTime, stopTime: job.data.stopTime })
           .returning('id');
 
         for (var item of job.data.items) {
@@ -48,13 +62,14 @@ finishedScrapesQueue.process((job, done) => {
 
     } finally {
       logger.info("Marking scraper command as finshed");
-      done(); }
+      done();
+    }
 
   })();
 
 });
 
-erroredScrapesQueue.process((job, done) => {
+erroredScrapes.process((job, done) => {
   logger.info(`${job.data.scraperClass} errored with {job.data.errors}`);
 
   (async () => {
@@ -79,10 +94,10 @@ process.on("SIGINT", function () {
   console.log("\ngracefully shutting down from SIGINT (Crtl-C)");
   (async () => {
     try {
-      await erroredScrapesQueue.close(1000);
-      await finishedScrapesQueue.close(1000);
+      await erroredScrapes.close(1000);
+      await finishedScrapes.close(1000);
     } catch (err) {
-      console.error('bee-queue failed to shut down gracefully', err);
+      console.error('bull-queue failed to shut down gracefully', err);
     }
     process.exit(0);
 
