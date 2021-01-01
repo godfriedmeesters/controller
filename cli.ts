@@ -2,7 +2,7 @@
  * @ Author: Godfried Meesters <godfriedmeesters@gmail.com>
  * @ Create Time: 2020-01-22 10:14:13
  * @ Modified by: Godfried Meesters <godfriedmeesters@gmail.com>
- * @ Modified time: 2020-12-29 20:34:22
+ * @ Modified time: 2020-12-31 20:51:32
  * @ Description:
  */
 
@@ -12,8 +12,7 @@ const yargs = require('yargs/yargs')
 const { hideBin } = require('yargs/helpers')
 var fs = require('fs');
 
-
-import { db, webScraperCommands, launchComparison, addToQueue } from './common';
+import { db, webScraperCommands, launchComparison, addToQueue, emulatedDeviceScraperCommands, realDeviceScraperCommands } from './common';
 import { logger } from './logger';
 
 
@@ -70,6 +69,12 @@ yargs(hideBin(process.argv))
         default: "de",
         description: 'Language for browser: de or fr'
       })
+      .option('useCookies', {
+        alias: 'useCookies',
+        type: 'boolean',
+        default: false,
+        description: 'Load Chrome profile with cookies'
+      })
 
   }, (argv) => {
 
@@ -81,18 +86,22 @@ yargs(hideBin(process.argv))
       "name": argv.scraperClass,
       "jobCreationTime": new Date(),
       scraperClass: argv.scraperClass, inputData,
-      params: { "useRealDevice": argv.useRealDevice, "notSaveInDB": argv.notSaveInDB, "useTestData": argv.useTestData, 'language': argv.language }
+      params: { "useRealDevice": argv.useRealDevice, "notSaveInDB": argv.notSaveInDB, "useCookies": argv.useCookies,  "useTestData": argv.useTestData, 'language': argv.language }
     };
 
     logger.info(`Sending new job ${JSON.stringify(job)}`);
     (async () => {
       await addToQueue(job);
+
+      await closeQueues();
     })();
   })
   .argv
 
 async function closeQueues() {
   try {
+    await realDeviceScraperCommands.close(1000);
+    await emulatedDeviceScraperCommands.close(1000);
     await webScraperCommands.close(1000);
   } catch (err) {
     console.error('bullqueue failed to shut down gracefully', err);
