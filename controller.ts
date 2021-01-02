@@ -2,12 +2,13 @@
  * @ Author: Godfried Meesters <godfriedmeesters@gmail.com>
  * @ Create Time: 2020-11-17 21:36:33
  * @ Modified by: Godfried Meesters <godfriedmeesters@gmail.com>
- * @ Modified time: 2020-12-29 20:36:15
+ * @ Modified time: 2021-01-02 20:11:15
  * @ Description:
  */
 
 
 require('dotenv').config();
+var os = require("os");
 var CronJob = require('cron').CronJob;
 import { db, launchComparison, finishedScrapes, erroredScrapes } from './common';
 
@@ -46,7 +47,9 @@ finishedScrapes.process((job, done) => {
         logger.info("Saving in db ");
         const scraper = await db('scraper').where({ name: job.data.scraperClass }).first();
 
-        var scraperRunId = await db('scraperRun').insert({ scraperId: scraper.id, comparisonId: job.data.comparisonId, comparisonRunId: job.data.comparisonRunId, inputData: job.data.inputData, startTime: job.data.startTime, stopTime: job.data.stopTime })
+        const hostName = os.hostname();
+
+        var scraperRunId = await db('scraperRun').insert({ hostName, scraperId: scraper.id, comparisonId: job.data.comparisonId, comparisonRunId: job.data.comparisonRunId, inputData: job.data.inputData, startTime: job.data.startTime, stopTime: job.data.stopTime })
           .returning('id');
 
         for (var item of job.data.items) {
