@@ -2,7 +2,7 @@
  * @ Author: Godfried Meesters <godfriedmeesters@gmail.com>
  * @ Create Time: 2020-11-23 17:58:06
  * @ Modified by: Godfried Meesters <godfriedmeesters@gmail.com>
- * @ Modified time: 2021-01-02 21:47:06
+ * @ Modified time: 2021-01-07 23:43:00
  * @ Description:
  */
 
@@ -41,17 +41,17 @@ export const erroredScrapes = new Queue('erroredScrapes', queueOptions);
 export async function addToQueue(job: any) {
   if (job.scraperClass.includes("Web")) {
     logger.info(`Adding job ${JSON.stringify(job)} to webScraperCommands`)
-    await webScraperCommands.add(job);
+    await webScraperCommands.add(job.scraperClass, job);
   }
   else
     if (job.scraperClass.includes("App") && yn(job.params.useRealDevice)) {
       logger.info(`Adding job ${JSON.stringify(job)} to realDeviceScraperCommands`)
-      await realDeviceScraperCommands.add(job);
+      await realDeviceScraperCommands.add(job.scraperClass, job);
     }
     else
       if (job.scraperClass.includes("App")) {
         logger.info(`Adding job ${JSON.stringify(job)} to emulatedDeviceScraperCommands`)
-        await emulatedDeviceScraperCommands.add(job);
+        await emulatedDeviceScraperCommands.add(job.scraperClass, job);
       }
 }
 
@@ -65,7 +65,7 @@ export async function launchComparison(comparison: any) {
     .returning('id');
 
   for (let scraper of comparison.comparisonConfig.scrapers) {
-    const job = {"name": scraper.scraperClass,  comparisonRunId, comparisonId, params: scraper.params, scraperClass: scraper.scraperClass, inputData };
+    const job = { comparisonRunId, comparisonId, params: scraper.params, scraperClass: scraper.scraperClass, inputData };
 
     await addToQueue(job);
   }

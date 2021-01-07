@@ -2,7 +2,7 @@
  * @ Author: Godfried Meesters <godfriedmeesters@gmail.com>
  * @ Create Time: 2020-11-17 21:36:33
  * @ Modified by: Godfried Meesters <godfriedmeesters@gmail.com>
- * @ Modified time: 2021-01-07 22:23:38
+ * @ Modified time: 2021-01-07 23:43:34
  * @ Description:
  */
 
@@ -16,7 +16,7 @@ import { logger } from './logger';
 
 logger.info("Started controller, listening for finished scrapes...");
 if (process.env.RUN_CRON) {
-  logger.info(`Starting cron job with timing ${process.env.CRON}`)
+  logger.info(`Starting cron job to automatically launch comparisons with timing ${process.env.CRON}`)
   var job = new CronJob(process.env.CRON, function () {
     logger.info("CRON event fired");
 

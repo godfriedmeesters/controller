@@ -2,7 +2,7 @@
  * @ Author: Godfried Meesters <godfriedmeesters@gmail.com>
  * @ Create Time: 2020-01-22 10:14:13
  * @ Modified by: Godfried Meesters <godfriedmeesters@gmail.com>
- * @ Modified time: 2020-12-31 20:51:32
+ * @ Modified time: 2021-01-07 23:38:36
  * @ Description:
  */
 
@@ -83,7 +83,6 @@ yargs(hideBin(process.argv))
     );
 
     const job = {
-      "name": argv.scraperClass,
       "jobCreationTime": new Date(),
       scraperClass: argv.scraperClass, inputData,
       params: { "useRealDevice": argv.useRealDevice, "notSaveInDB": argv.notSaveInDB, "useCookies": argv.useCookies,  "useTestData": argv.useTestData, 'language': argv.language }
