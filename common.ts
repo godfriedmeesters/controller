@@ -2,7 +2,7 @@
  * @ Author: Godfried Meesters <godfriedmeesters@gmail.com>
  * @ Create Time: 2020-11-23 17:58:06
  * @ Modified by: Godfried Meesters <godfriedmeesters@gmail.com>
- * @ Modified time: 2021-01-07 23:43:00
+ * @ Modified time: 2021-01-09 22:06:27
  * @ Description:
  */
 
@@ -41,17 +41,17 @@ export const erroredScrapes = new Queue('erroredScrapes', queueOptions);
 export async function addToQueue(job: any) {
   if (job.scraperClass.includes("Web")) {
     logger.info(`Adding job ${JSON.stringify(job)} to webScraperCommands`)
-    await webScraperCommands.add(job.scraperClass, job);
+    await webScraperCommands.add( job);
   }
   else
     if (job.scraperClass.includes("App") && yn(job.params.useRealDevice)) {
       logger.info(`Adding job ${JSON.stringify(job)} to realDeviceScraperCommands`)
-      await realDeviceScraperCommands.add(job.scraperClass, job);
+      await realDeviceScraperCommands.add( job);
     }
     else
       if (job.scraperClass.includes("App")) {
         logger.info(`Adding job ${JSON.stringify(job)} to emulatedDeviceScraperCommands`)
-        await emulatedDeviceScraperCommands.add(job.scraperClass, job);
+        await emulatedDeviceScraperCommands.add( job);
       }
 }
 
