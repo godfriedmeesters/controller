@@ -2,7 +2,7 @@
  * @ Author: Godfried Meesters <godfriedmeesters@gmail.com>
  * @ Create Time: 2020-11-23 17:58:06
  * @ Modified by: Godfried Meesters <godfriedmeesters@gmail.com>
- * @ Modified time: 2021-01-09 22:06:27
+ * @ Modified time: 2021-01-10 12:14:36
  * @ Description:
  */
 
@@ -44,7 +44,7 @@ export async function addToQueue(job: any) {
     await webScraperCommands.add( job);
   }
   else
-    if (job.scraperClass.includes("App") && yn(job.params.useRealDevice)) {
+    if (job.scraperClass.includes("App") && ("useRealDevice" in job.params) && yn(job.params.useRealDevice)) {
       logger.info(`Adding job ${JSON.stringify(job)} to realDeviceScraperCommands`)
       await realDeviceScraperCommands.add( job);
     }
@@ -65,7 +65,7 @@ export async function launchComparison(comparison: any) {
     .returning('id');
 
   for (let scraper of comparison.comparisonConfig.scrapers) {
-    const job = { comparisonRunId, comparisonId, params: scraper.params, scraperClass: scraper.scraperClass, inputData };
+    const job = { comparisonRunId: comparisonRunId[0] , comparisonId, params: scraper.params, scraperClass: scraper.scraperClass, inputData };
 
     await addToQueue(job);
   }
