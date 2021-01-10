@@ -2,7 +2,7 @@
  * @ Author: Godfried Meesters <godfriedmeesters@gmail.com>
  * @ Create Time: 2020-11-17 21:36:33
  * @ Modified by: Godfried Meesters <godfriedmeesters@gmail.com>
- * @ Modified time: 2021-01-07 23:43:34
+ * @ Modified time: 2021-01-10 19:34:41
  * @ Description:
  */
 
@@ -73,7 +73,7 @@ finishedScrapes.process((job, done) => {
 });
 
 erroredScrapes.process((job, done) => {
-  logger.info(`${job.data.scraperClass} errored with {job.data.errors}`);
+  logger.info(`${job.data.scraperClass} errored with ${JSON.stringify(job.data.errors)}`);
 
   (async () => {
     if (!job.data.params.notSaveInDB) {
