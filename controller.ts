@@ -2,7 +2,7 @@
  * @ Author: Godfried Meesters <godfriedmeesters@gmail.com>
  * @ Create Time: 2020-11-17 21:36:33
  * @ Modified by: Godfried Meesters <godfriedmeesters@gmail.com>
- * @ Modified time: 2021-01-10 19:34:41
+ * @ Modified time: 2021-01-13 21:08:38
  * @ Description:
  */
 
@@ -73,11 +73,11 @@ finishedScrapes.process((job, done) => {
 });
 
 erroredScrapes.process((job, done) => {
-  logger.info(`${job.data.scraperClass} errored with ${JSON.stringify(job.data.errors)}`);
+  logger.error(`${job.data.scraperClass}: errored with ${JSON.stringify(job.data.errors)}`);
 
   (async () => {
     if (!job.data.params.notSaveInDB) {
-      logger.info(`${job.data.scraperClass} saving errored scraperrun in db`);
+      logger.info(`${job.data.scraperClass}: saving errored scraperrun in db`);
       const scraper = await db('scraper').where({ name: job.data.scraperClass }).first();
 
       await db('scraperRun').insert({ errors: job.data.errors, inputData: job.data.inputData });
