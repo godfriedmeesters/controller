@@ -2,7 +2,7 @@
  * @ Author: Godfried Meesters <godfriedmeesters@gmail.com>
  * @ Create Time: 2020-11-23 17:58:06
  * @ Modified by: Godfried Meesters <godfriedmeesters@gmail.com>
- * @ Modified time: 2021-01-13 20:43:30
+ * @ Modified time: 2021-01-23 22:08:32
  * @ Description:
  */
 
@@ -69,4 +69,10 @@ export async function launchComparison(comparison: any) {
 
     await addToQueue(job);
   }
+}
+
+export function sleep(ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
 }

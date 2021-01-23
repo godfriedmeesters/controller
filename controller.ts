@@ -2,7 +2,7 @@
  * @ Author: Godfried Meesters <godfriedmeesters@gmail.com>
  * @ Create Time: 2020-11-17 21:36:33
  * @ Modified by: Godfried Meesters <godfriedmeesters@gmail.com>
- * @ Modified time: 2021-01-13 21:08:38
+ * @ Modified time: 2021-01-23 22:10:58
  * @ Description:
  */
 
@@ -10,7 +10,7 @@
 require('dotenv').config();
 var os = require("os");
 var CronJob = require('cron').CronJob;
-import { db, launchComparison, finishedScrapes, erroredScrapes } from './common';
+import { db, launchComparison, finishedScrapes, erroredScrapes, sleep } from './common';
 
 import { logger } from './logger';
 
@@ -25,10 +25,13 @@ if (process.env.RUN_CRON) {
 
       logger.info("Going to launch all comparisons");
       for (var comparison of comparisons) {
-        if (comparison.enabled)
+        if (comparison.enabled) {
+          await sleep(process.env.SLEEP_MS_BETWEEN_COMPARISONS);
           launchComparison(comparison);
-        else
+        }
+        else {
           logger.info(`Comparison ${comparison.id} disabled, skipping`);
+        }
       }
 
     })();
