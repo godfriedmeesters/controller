@@ -2,7 +2,7 @@
  * @ Author: Godfried Meesters <godfriedmeesters@gmail.com>
  * @ Create Time: 2020-11-23 17:58:06
  * @ Modified by: Godfried Meesters <godfriedmeesters@gmail.com>
- * @ Modified time: 2021-01-23 22:08:32
+ * @ Modified time: 2021-01-24 21:40:34
  * @ Description:
  */
 
@@ -67,6 +67,7 @@ export async function launchComparison(comparison: any) {
   for (let scraper of comparison.comparisonConfig.scrapers) {
     const job = { comparisonRunId: comparisonRunId[0] , comparisonId, params: scraper.params, scraperClass: scraper.scraperClass, inputData };
 
+    await sleep(process.env.SLEEP_MS_BETWEEN_COMPARISON_JOBS);
     await addToQueue(job);
   }
 }

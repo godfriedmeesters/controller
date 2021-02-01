@@ -2,13 +2,16 @@
  * @ Author: Godfried Meesters <godfriedmeesters@gmail.com>
  * @ Create Time: 2020-11-17 21:36:33
  * @ Modified by: Godfried Meesters <godfriedmeesters@gmail.com>
- * @ Modified time: 2021-01-23 22:10:58
+ * @ Modified time: 2021-02-01 23:16:06
  * @ Description:
  */
 
+ // TODO:add container id to scraper run
+
+
 
 require('dotenv').config();
-var os = require("os");
+
 var CronJob = require('cron').CronJob;
 import { db, launchComparison, finishedScrapes, erroredScrapes, sleep } from './common';
 
@@ -50,9 +53,9 @@ finishedScrapes.process((job, done) => {
         logger.info("Saving in db ");
         const scraper = await db('scraper').where({ name: job.data.scraperClass }).first();
 
-        const hostName = os.hostname();
 
-        var scraperRunId = await db('scraperRun').insert({ hostName, scraperId: scraper.id, comparisonId: job.data.comparisonId, comparisonRunId: job.data.comparisonRunId, inputData: job.data.inputData, startTime: job.data.startTime, stopTime: job.data.stopTime })
+
+        var scraperRunId = await db('scraperRun').insert({  scraperId: scraper.id, comparisonId: job.data.comparisonId, comparisonRunId: job.data.comparisonRunId, inputData: job.data.inputData, startTime: job.data.startTime, stopTime: job.data.stopTime, hostName: job.data.hostName  })
           .returning('id');
 
         for (var item of job.data.items) {
