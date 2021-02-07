@@ -2,7 +2,7 @@
  * @ Author: Godfried Meesters <godfriedmeesters@gmail.com>
  * @ Create Time: 2020-01-22 10:14:13
  * @ Modified by: Godfried Meesters <godfriedmeesters@gmail.com>
- * @ Modified time: 2021-01-07 23:38:36
+ * @ Modified time: 2021-02-05 23:56:09
  * @ Description:
  */
 
@@ -69,11 +69,17 @@ yargs(hideBin(process.argv))
         default: "de",
         description: 'Language for browser: de or fr'
       })
-      .option('useCookies', {
-        alias: 'useCookies',
+      .option('useAuthCookies', {
+        alias: 'useAuthCookies',
         type: 'boolean',
         default: false,
-        description: 'Load Chrome profile with cookies'
+        description: 'Use login cookies'
+      })
+      .option('reUseCookies', {
+        alias: 'reUseCookies',
+        type: 'boolean',
+        default: false,
+        description: 'Re-use cookies between scrapes'
       })
 
   }, (argv) => {
@@ -85,7 +91,7 @@ yargs(hideBin(process.argv))
     const job = {
       "jobCreationTime": new Date(),
       scraperClass: argv.scraperClass, inputData,
-      params: { "useRealDevice": argv.useRealDevice, "notSaveInDB": argv.notSaveInDB, "useCookies": argv.useCookies,  "useTestData": argv.useTestData, 'language': argv.language }
+      params: { "useRealDevice": argv.useRealDevice, "notSaveInDB": argv.notSaveInDB, "reUseCookies": argv.reUseCookies, "useAuthCookies": argv.useAuthCookies,  "useTestData": argv.useTestData, 'language': argv.language }
     };
 
     logger.info(`Sending new job ${JSON.stringify(job)}`);
