@@ -1,2 +1,0 @@
-ts-node cli.ts scrape ExpediaWebScraper .\inputData.json  --lang=fr
-test
