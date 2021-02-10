@@ -2,7 +2,7 @@
  * @ Author: Godfried Meesters <godfriedmeesters@gmail.com>
  * @ Create Time: 2020-11-23 17:58:06
  * @ Modified by: Godfried Meesters <godfriedmeesters@gmail.com>
- * @ Modified time: 2021-02-09 21:43:16
+ * @ Modified time: 2021-02-10 17:19:27
  * @ Description:
  */
 
@@ -33,14 +33,7 @@ const queueOptions = {
   },
 }
 
-const redisClient = redis.createClient({
-  "host": process.env.REDIS_HOST,
-  "password": process.env.REDIS_PASS
-});
 
-redisClient.on("error", function (error) {
-  console.error(error);
-});
 
 export const emulatedDeviceScraperCommands = new Queue('emulatedDeviceScraperCommands', queueOptions);
 export const realDeviceScraperCommands = new Queue('realDeviceScraperCommands', queueOptions);
@@ -76,7 +69,17 @@ export async function launchComparison(comparison: any) {
     .returning('id');
 
   logger.info(`Setting counter for comparisonRunId ${comparisonRunId} to zero`);
-  redisClient.set(comparisonRunId, 0);
+
+  const redisClient = redis.createClient({
+    "host": process.env.REDIS_HOST,
+    "password": process.env.REDIS_PASS
+  });
+
+  redisClient.on("error", function (error) {
+    console.error(error);
+  });
+
+  redisClient.set(parseInt(comparisonRunId), 0);
   redisClient.quit();
 
   for (let scraper of comparison.comparisonConfig.scrapers) {
