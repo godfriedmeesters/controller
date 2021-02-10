@@ -2,11 +2,11 @@
  * @ Author: Godfried Meesters <godfriedmeesters@gmail.com>
  * @ Create Time: 2020-11-17 21:36:33
  * @ Modified by: Godfried Meesters <godfriedmeesters@gmail.com>
- * @ Modified time: 2021-02-09 19:38:26
+ * @ Modified time: 2021-02-10 22:26:52
  * @ Description:
  */
 
- // TODO:add container id to scraper run
+// TODO:add container id to scraper run
 
 
 
@@ -29,8 +29,9 @@ if (process.env.RUN_CRON) {
       logger.info("Going to launch all comparisons");
       for (var comparison of comparisons) {
         if (comparison.enabled) {
-          await sleep(process.env.SLEEP_MS_BETWEEN_COMPARISONS);
           launchComparison(comparison);
+          // for every scraper in the comparison, add a delay of 800 seconds
+          await sleep(800 * 1000 * comparison.comparisonConfig.scrapers.length);
         }
         else {
           logger.info(`Comparison ${comparison.id} disabled, skipping`);
@@ -53,7 +54,7 @@ finishedScrapes.process((job, done) => {
         logger.info("Saving in db ");
         const scraper = await db('scraper').where({ name: job.data.scraperClass }).first();
 
-        var scraperRunId = await db('scraperRun').insert({  scraperId: scraper.id, comparisonId: job.data.comparisonId, comparisonRunId: job.data.comparisonRunId, inputData: job.data.inputData, startTime: job.data.startTime, stopTime: job.data.stopTime, hostName: job.data.hostName  })
+        var scraperRunId = await db('scraperRun').insert({ scraperId: scraper.id, comparisonId: job.data.comparisonId, comparisonRunId: job.data.comparisonRunId, inputData: job.data.inputData, startTime: job.data.startTime, stopTime: job.data.stopTime, hostName: job.data.hostName })
           .returning('id');
 
         for (var item of job.data.items) {
