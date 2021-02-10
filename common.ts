@@ -2,12 +2,13 @@
  * @ Author: Godfried Meesters <godfriedmeesters@gmail.com>
  * @ Create Time: 2020-11-23 17:58:06
  * @ Modified by: Godfried Meesters <godfriedmeesters@gmail.com>
- * @ Modified time: 2021-01-24 21:40:34
+ * @ Modified time: 2021-02-09 21:43:16
  * @ Description:
  */
 
+require('dotenv').config();
 
-
+const redis = require("redis");
 var Queue = require('bull');
 const yn = require('yn');
 
@@ -32,6 +33,15 @@ const queueOptions = {
   },
 }
 
+const redisClient = redis.createClient({
+  "host": process.env.REDIS_HOST,
+  "password": process.env.REDIS_PASS
+});
+
+redisClient.on("error", function (error) {
+  console.error(error);
+});
+
 export const emulatedDeviceScraperCommands = new Queue('emulatedDeviceScraperCommands', queueOptions);
 export const realDeviceScraperCommands = new Queue('realDeviceScraperCommands', queueOptions);
 export const webScraperCommands = new Queue('webScraperCommands', queueOptions);
@@ -41,21 +51,22 @@ export const erroredScrapes = new Queue('erroredScrapes', queueOptions);
 export async function addToQueue(job: any) {
   if (job.scraperClass.includes("Web")) {
     logger.info(`Adding job ${JSON.stringify(job)} to webScraperCommands`)
-    await webScraperCommands.add( job);
+    await webScraperCommands.add(job);
   }
   else
     if (job.scraperClass.includes("App") && ("useRealDevice" in job.params) && yn(job.params.useRealDevice)) {
       logger.info(`Adding job ${JSON.stringify(job)} to realDeviceScraperCommands`)
-      await realDeviceScraperCommands.add( job);
+      await realDeviceScraperCommands.add(job);
     }
     else
       if (job.scraperClass.includes("App")) {
         logger.info(`Adding job ${JSON.stringify(job)} to emulatedDeviceScraperCommands`)
-        await emulatedDeviceScraperCommands.add( job);
+        await emulatedDeviceScraperCommands.add(job);
       }
 }
 
 export async function launchComparison(comparison: any) {
+
   logger.info(`Launching comparison ${JSON.stringify(comparison)} `);
   const inputData = comparison.comparisonConfig.inputData;
   const comparisonId = comparison.id;
@@ -64,8 +75,12 @@ export async function launchComparison(comparison: any) {
   var comparisonRunId = await db('comparisonRun').insert({ startTime, comparisonId })
     .returning('id');
 
+  logger.info(`Setting counter for comparisonRunId ${comparisonRunId} to zero`);
+  redisClient.set(comparisonRunId, 0);
+  redisClient.quit();
+
   for (let scraper of comparison.comparisonConfig.scrapers) {
-    const job = { comparisonRunId: comparisonRunId[0] , comparisonId, params: scraper.params, scraperClass: scraper.scraperClass, inputData };
+    const job = { comparisonRunId: comparisonRunId[0], comparisonSize: comparison.comparisonConfig.scrapers.length, comparisonId, params: scraper.params, scraperClass: scraper.scraperClass, inputData };
 
     await sleep(process.env.SLEEP_MS_BETWEEN_COMPARISON_JOBS);
     await addToQueue(job);
