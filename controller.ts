@@ -2,7 +2,7 @@
  * @ Author: Godfried Meesters <godfriedmeesters@gmail.com>
  * @ Create Time: 2020-11-17 21:36:33
  * @ Modified by: Godfried Meesters <godfriedmeesters@gmail.com>
- * @ Modified time: 2021-02-10 22:26:52
+ * @ Modified time: 2021-02-11 23:28:14
  * @ Description:
  */
 
@@ -31,7 +31,9 @@ if (process.env.RUN_CRON) {
         if (comparison.enabled) {
           launchComparison(comparison);
           // for every scraper in the comparison, add a delay of 800 seconds
-          await sleep(800 * 1000 * comparison.comparisonConfig.scrapers.length);
+          const sleepTime = 800 * 1000 * comparison.comparisonConfig.scrapers.length;
+          logger.info(`Sleeping ${sleepTime} `);
+          await sleep(sleepTime);
         }
         else {
           logger.info(`Comparison ${comparison.id} disabled, skipping`);
@@ -45,13 +47,13 @@ if (process.env.RUN_CRON) {
 }
 
 finishedScrapes.process((job, done) => {
-  logger.info(`${job.data.scraperClass} finished`);
+  logger.info(`${job.data.scraperClass} sucessfully finished`);
   logger.debug(`Result returned: ${JSON.stringify(job.data)}`);
 
   (async () => {
     try {
-      if (!job.data.params.notSaveInDB) {
-        logger.info("Saving in db ");
+      if (!job.data.params.notSaveInDB && "items" in job.data) {
+        logger.info("Saving items in db ");
         const scraper = await db('scraper').where({ name: job.data.scraperClass }).first();
 
         var scraperRunId = await db('scraperRun').insert({ scraperId: scraper.id, comparisonId: job.data.comparisonId, comparisonRunId: job.data.comparisonRunId, inputData: job.data.inputData, startTime: job.data.startTime, stopTime: job.data.stopTime, hostName: job.data.hostName })
@@ -69,7 +71,7 @@ finishedScrapes.process((job, done) => {
       logger.error(exception);
 
     } finally {
-      logger.info("Marking scraper command as finshed");
+      logger.info("Marking scraper command as finished");
       done();
     }
 
