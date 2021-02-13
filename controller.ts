@@ -2,13 +2,11 @@
  * @ Author: Godfried Meesters <godfriedmeesters@gmail.com>
  * @ Create Time: 2020-11-17 21:36:33
  * @ Modified by: Godfried Meesters <godfriedmeesters@gmail.com>
- * @ Modified time: 2021-02-11 23:28:14
+ * @ Modified time: 2021-02-12 13:59:33
  * @ Description:
  */
 
 // TODO:add container id to scraper run
-
-
 
 require('dotenv').config();
 
@@ -32,7 +30,7 @@ if (process.env.RUN_CRON) {
           launchComparison(comparison);
           // for every scraper in the comparison, add a delay of 800 seconds
           const sleepTime = 800 * 1000 * comparison.comparisonConfig.scrapers.length;
-          logger.info(`Sleeping ${sleepTime} `);
+          logger.info(`Sleeping ${sleepTime} ms`);
           await sleep(sleepTime);
         }
         else {
@@ -71,7 +69,7 @@ finishedScrapes.process((job, done) => {
       logger.error(exception);
 
     } finally {
-      logger.info("Marking scraper command as finished");
+      logger.info(`Marking scraper run of ${job.data.scraperClass} command as finished`);
       done();
     }
 
