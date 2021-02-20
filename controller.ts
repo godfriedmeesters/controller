@@ -2,7 +2,7 @@
  * @ Author: Godfried Meesters <godfriedmeesters@gmail.com>
  * @ Create Time: 2020-11-17 21:36:33
  * @ Modified by: Godfried Meesters <godfriedmeesters@gmail.com>
- * @ Modified time: 2021-02-12 13:59:33
+ * @ Modified time: 2021-02-20 19:10:07
  * @ Description:
  */
 
@@ -30,7 +30,7 @@ if (process.env.RUN_CRON) {
           launchComparison(comparison);
           // for every scraper in the comparison, add a delay of 800 seconds
           const sleepTime = 800 * 1000 * comparison.comparisonConfig.scrapers.length;
-          logger.info(`Sleeping ${sleepTime} ms`);
+          logger.info(`Sleeping ${sleepTime} ms until next comparison run`);
           await sleep(sleepTime);
         }
         else {
