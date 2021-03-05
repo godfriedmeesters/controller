@@ -2,7 +2,7 @@
  * @ Author: Godfried Meesters <godfriedmeesters@gmail.com>
  * @ Create Time: 2020-11-17 21:36:33
  * @ Modified by: Godfried Meesters <godfriedmeesters@gmail.com>
- * @ Modified time: 2021-02-20 19:10:07
+ * @ Modified time: 2021-03-05 18:22:57
  * @ Description:
  */
 
@@ -45,7 +45,7 @@ if (process.env.RUN_CRON) {
 }
 
 finishedScrapes.process((job, done) => {
-  logger.info(`${job.data.scraperClass} sucessfully finished`);
+  logger.info(`${job.data.scraperClass} finished without exceptions`);
   logger.debug(`Result returned: ${JSON.stringify(job.data)}`);
 
   (async () => {
@@ -69,7 +69,7 @@ finishedScrapes.process((job, done) => {
       logger.error(exception);
 
     } finally {
-      logger.info(`Marking scraper run of ${job.data.scraperClass} command as finished`);
+      logger.info(`Marking scraper run of ${job.data.scraperClass} command as finished in queue`);
       done();
     }
 
@@ -85,7 +85,7 @@ erroredScrapes.process((job, done) => {
       logger.info(`${job.data.scraperClass}: saving errored scraperrun in db`);
       const scraper = await db('scraper').where({ name: job.data.scraperClass }).first();
 
-      await db('scraperRun').insert({ errors: job.data.errors, inputData: job.data.inputData });
+      await db('scraperRun').insert({ errors: job.data.errors, inputData: job.data.inputData, scraperId: scraper.id, comparisonId: job.data.comparisonId });
 
     }
     else {
