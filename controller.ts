@@ -2,7 +2,7 @@
  * @ Author: Godfried Meesters <godfriedmeesters@gmail.com>
  * @ Create Time: 2020-11-17 21:36:33
  * @ Modified by: Godfried Meesters <godfriedmeesters@gmail.com>
- * @ Modified time: 2021-04-02 23:06:57
+ * @ Modified time: 2021-04-02 23:09:13
  * @ Description:
  */
 
@@ -43,11 +43,12 @@ if (process.env.RUN_CRON) {
 
 
 
-          logger.info(`Sleeping ${sleepTime} ms until next comparison run`);
+
+          logger.info(`Controller: Sleeping ${sleepTime} ms until next comparison run`);
           await sleep(sleepTime);
         }
         else {
-          logger.info(`Comparison ${comparison.id} disabled, skipping`);
+          logger.info(`Controller: Comparison ${comparison.id} disabled, skipping`);
         }
       }
 
@@ -58,13 +59,13 @@ if (process.env.RUN_CRON) {
 }
 
 finishedScrapes.process((job, done) => {
-  logger.info(`${job.data.scraperClass} finished without exceptions`);
+  logger.info(`Controller: ${job.data.scraperClass} finished without exceptions`);
 
 
   (async () => {
     try {
       if (!job.data.params.notSaveInDB && "items" in job.data) {
-        logger.info("Saving items in db ");
+        logger.info("Controller: Saving items in db ");
         const scraper = await db('scraper').where({ name: job.data.scraperClass }).first();
 
         var scraperRunId = await db('scraperRun').insert({ scraperId: scraper.id, comparisonId: job.data.comparisonId, comparisonRunId: job.data.comparisonRunId, inputData: job.data.inputData, startTime: job.data.startTime, stopTime: job.data.stopTime, hostName: job.data.hostName })
@@ -82,7 +83,7 @@ finishedScrapes.process((job, done) => {
       logger.error(exception);
 
     } finally {
-      logger.info(`Marking scraper run of ${job.data.scraperClass} command as finished in queue`);
+      logger.info(`Controller: Marking scraper run of ${job.data.scraperClass} command as finished in queue`);
       done();
     }
 
