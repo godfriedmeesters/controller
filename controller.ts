@@ -2,7 +2,7 @@
  * @ Author: Godfried Meesters <godfriedmeesters@gmail.com>
  * @ Create Time: 2020-11-17 21:36:33
  * @ Modified by: Godfried Meesters <godfriedmeesters@gmail.com>
- * @ Modified time: 2021-03-23 22:29:47
+ * @ Modified time: 2021-04-02 23:06:57
  * @ Description:
  */
 
@@ -28,7 +28,21 @@ if (process.env.RUN_CRON) {
         if (comparison.enabled) {
           launchComparison(comparison);
           // for every scraper in the comparison, add a delay of 800 seconds
-          const sleepTime = parseInt(process.env.SLEEP_SECONDS_PER_SCRAPER_RUN) * comparison.comparisonConfig.scrapers.length * 1000;
+
+
+
+          const synSeconds = parseInt(process.env.MAX_SYNCHRONIZATION_SECONDS);  //sync seconds on start & search fore every scraper in comparison
+          const timeoutBeforeSearch = parseInt(process.env.TIMEOUT_SECONDS_BEFORE_SEARCH);  //max time for scrapeBeforeSearch
+          const timeoutAfterSearch = parseInt(process.env.TIMEOUT_SECONDS_AFTER_SEARCH); //max time for scrapeAfterSearch
+
+
+
+          //(δ+α+2⋅β)⋅n  ms
+          const sleepTime = (timeoutBeforeSearch + timeoutAfterSearch + synSeconds*2 ) * comparison.comparisonConfig.scrapers.length * 1000* 2;
+
+
+
+
           logger.info(`Sleeping ${sleepTime} ms until next comparison run`);
           await sleep(sleepTime);
         }
@@ -45,7 +59,7 @@ if (process.env.RUN_CRON) {
 
 finishedScrapes.process((job, done) => {
   logger.info(`${job.data.scraperClass} finished without exceptions`);
-  logger.debug(`Result returned: ${JSON.stringify(job.data)}`);
+
 
   (async () => {
     try {

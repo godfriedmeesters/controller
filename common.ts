@@ -2,7 +2,7 @@
  * @ Author: Godfried Meesters <godfriedmeesters@gmail.com>
  * @ Create Time: 2020-11-23 17:58:06
  * @ Modified by: Godfried Meesters <godfriedmeesters@gmail.com>
- * @ Modified time: 2021-02-10 23:37:32
+ * @ Modified time: 2021-04-01 22:23:53
  * @ Description:
  */
 
@@ -79,7 +79,9 @@ export async function launchComparison(comparison: any) {
     console.error(error);
   });
 
-  redisClient.set(parseInt(comparisonRunId), 0);
+  redisClient.set("comparison_"  +   parseInt(comparisonRunId) + "_started_count", 0);   // how many scraper runs started?
+  redisClient.set("comparison_"  +   parseInt(comparisonRunId) + "_reached_search_count", 0); // how many scraper runs reached search button?
+  redisClient.set("comparison_"  +   parseInt(comparisonRunId) + "_errored_count", 0);  // did any of the scraper runs in the comparison error?
   redisClient.quit();
 
   for (let scraper of comparison.comparisonConfig.scrapers) {
