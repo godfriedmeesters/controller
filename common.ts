@@ -2,7 +2,7 @@
  * @ Author: Godfried Meesters <godfriedmeesters@gmail.com>
  * @ Create Time: 2020-11-23 17:58:06
  * @ Modified by: Godfried Meesters <godfriedmeesters@gmail.com>
- * @ Modified time: 2021-04-01 22:23:53
+ * @ Modified time: 2021-04-02 23:28:13
  * @ Description:
  */
 
@@ -68,7 +68,7 @@ export async function launchComparison(comparison: any) {
   var comparisonRunId = await db('comparisonRun').insert({ startTime, comparisonId })
     .returning('id');
 
-  logger.info(`Setting counter for comparisonRunId ${comparisonRunId} to zero`);
+
 
   const redisClient = redis.createClient({
     "host": process.env.REDIS_HOST,
@@ -79,6 +79,7 @@ export async function launchComparison(comparison: any) {
     console.error(error);
   });
 
+  logger.info(`Setting counters for comparisonRunId ${comparisonRunId} to zero`);
   redisClient.set("comparison_"  +   parseInt(comparisonRunId) + "_started_count", 0);   // how many scraper runs started?
   redisClient.set("comparison_"  +   parseInt(comparisonRunId) + "_reached_search_count", 0); // how many scraper runs reached search button?
   redisClient.set("comparison_"  +   parseInt(comparisonRunId) + "_errored_count", 0);  // did any of the scraper runs in the comparison error?

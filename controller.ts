@@ -2,7 +2,7 @@
  * @ Author: Godfried Meesters <godfriedmeesters@gmail.com>
  * @ Create Time: 2020-11-17 21:36:33
  * @ Modified by: Godfried Meesters <godfriedmeesters@gmail.com>
- * @ Modified time: 2021-04-02 23:09:13
+ * @ Modified time: 2021-04-04 00:14:16
  * @ Description:
  */
 
@@ -36,12 +36,12 @@ if (process.env.RUN_CRON) {
           const timeoutAfterSearch = parseInt(process.env.TIMEOUT_SECONDS_AFTER_SEARCH); //max time for scrapeAfterSearch
 
 
+          logger.info(`Controller: synSeconds = ${synSeconds}`);
+          logger.info(`Controller: timeoutBeforeSearch = ${timeoutBeforeSearch}`);
+          logger.info(`Controller: timeoutAfterSearch = ${timeoutAfterSearch}`);
 
           //(δ+α+2⋅β)⋅n  ms
-          const sleepTime = (timeoutBeforeSearch + timeoutAfterSearch + synSeconds*2 ) * comparison.comparisonConfig.scrapers.length * 1000* 2;
-
-
-
+          const sleepTime = (timeoutBeforeSearch + timeoutAfterSearch + synSeconds * 2) * comparison.comparisonConfig.scrapers.length * 1000 * 2;
 
 
           logger.info(`Controller: Sleeping ${sleepTime} ms until next comparison run`);
