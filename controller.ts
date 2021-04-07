@@ -2,7 +2,7 @@
  * @ Author: Godfried Meesters <godfriedmeesters@gmail.com>
  * @ Create Time: 2020-11-17 21:36:33
  * @ Modified by: Godfried Meesters <godfriedmeesters@gmail.com>
- * @ Modified time: 2021-04-04 00:14:16
+ * @ Modified time: 2021-04-06 23:50:57
  * @ Description:
  */
 
@@ -30,7 +30,6 @@ if (process.env.RUN_CRON) {
           // for every scraper in the comparison, add a delay of 800 seconds
 
 
-
           const synSeconds = parseInt(process.env.MAX_SYNCHRONIZATION_SECONDS);  //sync seconds on start & search fore every scraper in comparison
           const timeoutBeforeSearch = parseInt(process.env.TIMEOUT_SECONDS_BEFORE_SEARCH);  //max time for scrapeBeforeSearch
           const timeoutAfterSearch = parseInt(process.env.TIMEOUT_SECONDS_AFTER_SEARCH); //max time for scrapeAfterSearch
@@ -41,8 +40,7 @@ if (process.env.RUN_CRON) {
           logger.info(`Controller: timeoutAfterSearch = ${timeoutAfterSearch}`);
 
           //(δ+α+2⋅β)⋅n  ms
-          const sleepTime = (timeoutBeforeSearch + timeoutAfterSearch + synSeconds * 2) * comparison.comparisonConfig.scrapers.length * 1000 * 2;
-
+          const sleepTime = (timeoutBeforeSearch + timeoutAfterSearch + synSeconds * 2) * comparison.comparisonConfig.scrapers.length * 1000;
 
           logger.info(`Controller: Sleeping ${sleepTime} ms until next comparison run`);
           await sleep(sleepTime);
