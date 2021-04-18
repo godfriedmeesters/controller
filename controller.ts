@@ -2,7 +2,7 @@
  * @ Author: Godfried Meesters <godfriedmeesters@gmail.com>
  * @ Create Time: 2020-11-17 21:36:33
  * @ Modified by: Godfried Meesters <godfriedmeesters@gmail.com>
- * @ Modified time: 2021-04-06 23:50:57
+ * @ Modified time: 2021-04-15 17:08:07
  * @ Description:
  */
 
@@ -58,6 +58,7 @@ if (process.env.RUN_CRON) {
 
 finishedScrapes.process((job, done) => {
   logger.info(`Controller: ${job.data.scraperClass} finished without exceptions`);
+  logger.info("Got Offers: " + JSON.stringify(job.data));
 
 
   (async () => {
