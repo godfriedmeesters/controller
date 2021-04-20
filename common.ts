@@ -2,7 +2,7 @@
  * @ Author: Godfried Meesters <godfriedmeesters@gmail.com>
  * @ Create Time: 2020-11-23 17:58:06
  * @ Modified by: Godfried Meesters <godfriedmeesters@gmail.com>
- * @ Modified time: 2021-04-19 13:52:07
+ * @ Modified time: 2021-04-20 20:14:35
  * @ Description:
  */
 
@@ -52,6 +52,7 @@ export async function addToQueue(job: any) {
       logger.info(`Adding job ${JSON.stringify(job)} to realDeviceScraperCommands`)
       await realDeviceScraperCommands.add(job);
     }
+    else
     if (job.scraperClass.includes("MobileBrowser")) {
       logger.info(`Adding job ${JSON.stringify(job)} to mobileBrowserScraperCommands`)
       await mobileBrowserScraperCommands.add(job);
