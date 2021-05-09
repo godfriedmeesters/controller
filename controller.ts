@@ -2,7 +2,7 @@
  * @ Author: Godfried Meesters <godfriedmeesters@gmail.com>
  * @ Create Time: 2020-11-17 21:36:33
  * @ Modified by: Godfried Meesters <godfriedmeesters@gmail.com>
- * @ Modified time: 2021-04-15 17:08:07
+ * @ Modified time: 2021-05-09 11:56:58
  * @ Description:
  */
 
@@ -70,8 +70,21 @@ finishedScrapes.process((job, done) => {
         var scraperRunId = await db('scraperRun').insert({ scraperId: scraper.id, comparisonId: job.data.comparisonId, comparisonRunId: job.data.comparisonRunId, inputData: job.data.inputData, startTime: job.data.startTime, stopTime: job.data.stopTime, hostName: job.data.hostName })
           .returning('id');
 
-        for (var item of job.data.items) {
-          await db('scraperRunResult').insert({ scraperRunId: scraperRunId[0], scraperId: scraper.id, result: JSON.parse(JSON.stringify(item)) });
+
+        if (!('sortedByBest' in job.data.items && 'sortedByCheapest' in job.data.items)) {
+          for (var i = 0; i < job.data.items.length; i++) {
+            await db('scraperRunResult').insert({ scraperRunId: scraperRunId[0], scraperId: scraper.id,sortedBy: "sortedByBest", result: JSON.parse(JSON.stringify(job.data.items[i])) });
+          }
+        }
+        else {
+          for (var i = 0; i < job.data.items.sortedByBest.length; i++) {
+            await db('scraperRunResult').insert({ scraperRunId: scraperRunId[0], scraperId: scraper.id, sortedBy: "sortedByBest", result: JSON.parse(JSON.stringify(job.data.items.sortedByBest[i])) });
+
+          }
+          for (var i = 0; i < job.data.items.sortedByCheapest.length; i++) {
+            await db('scraperRunResult').insert({ scraperRunId: scraperRunId[0], scraperId: scraper.id, sortedBy: "sortedByCheapest", result: JSON.parse(JSON.stringify(job.data.items.sortedByCheapest[i])) });
+
+          }
         }
       }
       else {
