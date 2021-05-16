@@ -2,7 +2,7 @@
  * @ Author: Godfried Meesters <godfriedmeesters@gmail.com>
  * @ Create Time: 2020-11-17 21:36:33
  * @ Modified by: Godfried Meesters <godfriedmeesters@gmail.com>
- * @ Modified time: 2021-05-09 11:56:58
+ * @ Modified time: 2021-05-16 18:35:42
  * @ Description:
  */
 
@@ -111,7 +111,7 @@ erroredScrapes.process((job, done) => {
       logger.info(`${job.data.scraperClass}: saving errored scraperrun in db`);
       const scraper = await db('scraper').where({ name: job.data.scraperClass }).first();
 
-      await db('scraperRun').insert({ errors: job.data.errors, inputData: job.data.inputData, scraperId: scraper.id, comparisonId: job.data.comparisonId });
+      await db('scraperRun').insert({ errors: job.data.errors, inputData: job.data.inputData, params:job.data.params, scraperId: scraper.id, comparisonId: job.data.comparisonId });
 
     }
     else {
