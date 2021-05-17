@@ -2,7 +2,7 @@
  * @ Author: Godfried Meesters <godfriedmeesters@gmail.com>
  * @ Create Time: 2020-11-17 21:36:33
  * @ Modified by: Godfried Meesters <godfriedmeesters@gmail.com>
- * @ Modified time: 2021-05-16 18:35:42
+ * @ Modified time: 2021-05-17 09:43:02
  * @ Description:
  */
 
@@ -67,7 +67,7 @@ finishedScrapes.process((job, done) => {
         logger.info("Controller: Saving items in db ");
         const scraper = await db('scraper').where({ name: job.data.scraperClass }).first();
 
-        var scraperRunId = await db('scraperRun').insert({ scraperId: scraper.id, comparisonId: job.data.comparisonId, comparisonRunId: job.data.comparisonRunId, inputData: job.data.inputData, startTime: job.data.startTime, stopTime: job.data.stopTime, hostName: job.data.hostName })
+        var scraperRunId = await db('scraperRun').insert({ scraperId: scraper.id, comparisonId: job.data.comparisonId, comparisonRunId: job.data.comparisonRunId, inputData: job.data.inputData, params:job.data.params, startTime: job.data.startTime, stopTime: job.data.stopTime, hostName: job.data.hostName })
           .returning('id');
 
 
