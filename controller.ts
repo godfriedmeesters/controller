@@ -2,7 +2,7 @@
  * @ Author: Godfried Meesters <godfriedmeesters@gmail.com>
  * @ Create Time: 2020-11-17 21:36:33
  * @ Modified by: Godfried Meesters <godfriedmeesters@gmail.com>
- * @ Modified time: 2021-05-17 09:43:02
+ * @ Modified time: 2021-05-24 23:03:56
  * @ Description:
  */
 
@@ -67,13 +67,13 @@ finishedScrapes.process((job, done) => {
         logger.info("Controller: Saving items in db ");
         const scraper = await db('scraper').where({ name: job.data.scraperClass }).first();
 
-        var scraperRunId = await db('scraperRun').insert({ scraperId: scraper.id, comparisonId: job.data.comparisonId, comparisonRunId: job.data.comparisonRunId, inputData: job.data.inputData, params:job.data.params, startTime: job.data.startTime, stopTime: job.data.stopTime, hostName: job.data.hostName })
+        var scraperRunId = await db('scraperRun').insert({ scraperId: scraper.id, comparisonId: job.data.comparisonId, comparisonRunId: job.data.comparisonRunId, inputData: job.data.inputData, params: job.data.params, startTime: job.data.startTime, stopTime: job.data.stopTime, hostName: job.data.hostName })
           .returning('id');
 
 
         if (!('sortedByBest' in job.data.items && 'sortedByCheapest' in job.data.items)) {
           for (var i = 0; i < job.data.items.length; i++) {
-            await db('scraperRunResult').insert({ scraperRunId: scraperRunId[0], scraperId: scraper.id,sortedBy: "sortedByBest", result: JSON.parse(JSON.stringify(job.data.items[i])) });
+            await db('scraperRunResult').insert({ scraperRunId: scraperRunId[0], scraperId: scraper.id, sortedBy: "sortedByBest", result: JSON.parse(JSON.stringify(job.data.items[i])) });
           }
         }
         else {
@@ -111,8 +111,9 @@ erroredScrapes.process((job, done) => {
       logger.info(`${job.data.scraperClass}: saving errored scraperrun in db`);
       const scraper = await db('scraper').where({ name: job.data.scraperClass }).first();
 
-      await db('scraperRun').insert({ errors: job.data.errors, inputData: job.data.inputData, params:job.data.params, scraperId: scraper.id, comparisonId: job.data.comparisonId });
-
+      if (scraper != null && scraper.id) {
+        await db('scraperRun').insert({ errors: job.data.errors, inputData: job.data.inputData, params: job.data.params, scraperId: scraper.id, comparisonId: job.data.comparisonId });
+      }
     }
     else {
       logger.info("Skip saving in db ");
