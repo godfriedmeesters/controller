@@ -2,7 +2,7 @@
  * @ Author: Godfried Meesters <godfriedmeesters@gmail.com>
  * @ Create Time: 2020-11-17 21:36:33
  * @ Modified by: Godfried Meesters <godfriedmeesters@gmail.com>
- * @ Modified time: 2021-05-24 23:03:56
+ * @ Modified time: 2021-05-24 23:06:53
  * @ Description:
  */
 
@@ -113,6 +113,9 @@ erroredScrapes.process((job, done) => {
 
       if (scraper != null && scraper.id) {
         await db('scraperRun').insert({ errors: job.data.errors, inputData: job.data.inputData, params: job.data.params, scraperId: scraper.id, comparisonId: job.data.comparisonId });
+      }
+      else {
+        logger.info(`Scraper class ${job.data.scraperClass} not found`);
       }
     }
     else {
