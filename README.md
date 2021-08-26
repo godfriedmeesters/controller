@@ -4,7 +4,7 @@ As part of  [DiffScraper](https://github.com/godfriedmeesters/diffscraper "DiffS
 
 ## System Requirements
 
-DiffScraper Controller needs a connection to a central Redis database (to send jobs to bots).  In addition, to store offers returned by bots, a PostgreSQL database needs to be available. 
+DiffScraper Controller needs a connection to a central Redis database (to send jobs to bots).  In addition, to store offers returned by bots, a PostgreSQL database needs to be available.  Redis and PostgreSQL connection details can be set through the enviromental variables defined in [.env](https://github.com/godfriedmeesters/controller/blob/main/.env ".env").
 
 ## Installation Guide
 
