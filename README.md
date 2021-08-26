@@ -24,6 +24,6 @@ Enter  the controller container:
 `docker exec -it  controller bash`
 
 This command will launch comparison 13:
-`ts-node launchComparison 13`
+`ts-node cli.ts launchComparison 13`
 
 As with the launch of a scheduled comparison, for every outlet defined in a comparison, a scraping job will be created on one of the Redis queues. 
