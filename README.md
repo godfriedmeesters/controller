@@ -16,14 +16,14 @@ Several environmental variables can be changed; for example the variable `CRON` 
 
 ## DiffScraper Controller CLI
 
-In a production system, a bot receives scraping jobs via a central Redis queue from the [controller](https://github.com/godfriedmeesters/controller "controller").  
+In a production system, comparisons are launched through a CRON scheduler. For testing purposes, it is also possible to launch comparisons directly through a CLI. 
 
-To test a (new) bot, it is possible to bypass the job queue and test the bot locally from within its Docker container.
+For example, to launch comparison 13 defined in the PostgreSQL comparisons table:
 
-For example, to start scraping offers from the French website of Opodo:
+Enter  the controller container:
+`docker exec -it  controller bash`
 
-Enter  into an Opodo bot:
-`kubectl --kubeconfig="my-kubeconfig.yaml" exec --stdin --tty  webscraper-deployment--1   -- /bin/bash`
+This command will launch comparison 13:
+`ts-node launchComparison 13`
 
-This command will extract all offers from opodo.fr:
-`ts-node scrape OpodoWebScraper inputData.json --lang=fr`
+As with the launch of a scheduled comparison, for every outlet defined in a comparison, a scraping job will be created on one of the Redis queues. 
