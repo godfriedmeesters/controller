@@ -1,4 +1,4 @@
-#DiffScraper Controller
+# DiffScraper Controller
 
 As part of  [DiffScraper](https://github.com/godfriedmeesters/diffscraper "DiffScraper"), the controller sends jobs to scraping bots, and collects the offers extracted by bots.
 
