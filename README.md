@@ -20,12 +20,12 @@ Several environmental variables can be changed; for example the variable `CRON` 
 
 In a production system, comparisons are launched through a CRON scheduler. For testing purposes, it is also possible to launch comparisons directly through a CLI. 
 
-For example, to launch comparison 13 defined in the PostgreSQL comparisons table:
+For example, to launch comparison defined in the PostgreSQL comparisons table:
 
 Enter  the controller container:
 `docker exec -it  controller bash`
 
-This command will launch comparison 13:
+This command will launch comparison 13 from the table `comparisons`:
 `ts-node cli.ts launchComparison 13`
 
 As with the launch of a scheduled comparison, for every outlet defined in a comparison, a scraping job will be created on one of the Redis queues, that will in turn be pulled by bots.
