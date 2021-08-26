@@ -6,7 +6,7 @@ As part of  [DiffScraper](https://github.com/godfriedmeesters/diffscraper "DiffS
 
 DiffScraper Controller needs a connection to a central Redis database (to send jobs to bots).  In addition, to store offers returned by bots, a PostgreSQL database needs to be available.  Redis and PostgreSQL connection details can be set through the enviromental variables defined in [.env](https://github.com/godfriedmeesters/controller/blob/main/.env ".env"). 
 
-The DDL for the PostgreSQL database, including predefined scraping bots and comparisons, can be found [.env]( https://github.com/godfriedmeesters/controller/blob/main/config/PostgreSQL_Backup_20210826 ".env"). 
+The DDL for the PostgreSQL database, including predefined scraping bots and comparisons, can be found [here]( https://github.com/godfriedmeesters/controller/blob/main/config/PostgreSQL_Backup_20210826 "here"). 
 
 ## Installation Guide
 
